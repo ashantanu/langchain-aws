@@ -617,6 +617,7 @@ class ChatBedrockConverse(BaseChatModel):
         topP: Optional[float] = None,
         tools: Optional[List] = None,
         toolChoice: Optional[dict] = None,
+        toolCheckpoint: bool = False,
         modelId: Optional[str] = None,
         inferenceConfig: Optional[dict] = None,
         toolConfig: Optional[dict] = None,
@@ -633,7 +634,12 @@ class ChatBedrockConverse(BaseChatModel):
             }
         if not toolConfig and tools:
             toolChoice = _format_tool_choice(toolChoice) if toolChoice else None
-            toolConfig = {"tools": _format_tools(tools), "toolChoice": toolChoice}
+            toolConfig = {
+                "tools": _format_tools(tools), 
+                "toolChoice": toolChoice,
+            }
+            if toolCheckpoint:
+                toolConfig["cachePoint"] = {"type": "default"}
 
         return _drop_none(
             {
